@@ -19,6 +19,7 @@ void print(Node* head)
     cout<<endl;
 }
 
+//迭代法
 Node* reverseIter(Node* head)
 {
     Node* pre = nullptr;
@@ -33,6 +34,7 @@ Node* reverseIter(Node* head)
     return pre;
 }
 
+//递归法
 Node* reverseRecur(Node* head)
 {
     if(head == nullptr || head->next == nullptr)
@@ -41,6 +43,53 @@ Node* reverseRecur(Node* head)
     head->next->next = head;
     head->next = nullptr;
     return temp;
+}
+
+//翻转[head,tail]间链表
+pair<Node*,Node*> reverse(Node* head,Node* tail)
+{
+    Node* pre = nullptr;
+    Node* cur = head;
+    Node* end = tail->next;
+    while(cur != end)
+    {
+        Node* p = cur->next;
+        cur->next = pre;
+        pre = cur;
+        cur = p;
+    }
+    return {pre,head};
+}
+
+//k个一组翻转链表
+Node* swapPairs(Node* head,int k) 
+{
+
+    Node* dummy = new Node(0,head);
+    Node* pre = dummy;
+
+    while(head)
+    {
+        Node* tail = pre;
+        //剩余长度是否大于等于k
+        for(int i = 0; i < k; i++)
+        {
+            tail = tail->next;
+            if(tail == nullptr)
+                return dummy->next;
+        }
+
+        Node* temp = tail->next;
+        pair<Node*,Node*> ret = reverse(head,tail);
+
+        pre->next = ret.first;
+        ret.second->next = temp;
+        pre = ret.second;
+        head = temp;
+    }
+    Node* res = dummy->next;
+    delete dummy;
+    return res;
 }
 
 int main()
@@ -60,6 +109,10 @@ int main()
 
     cout<<"递归法：";
     head = reverseRecur(head);
+    print(head);
+
+    cout<<"2个一组翻转链表：";
+    head = swapPairs(head,2);
     print(head);
 
     return 0;

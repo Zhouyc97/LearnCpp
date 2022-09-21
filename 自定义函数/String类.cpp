@@ -27,6 +27,12 @@ public:
 		m_data = new char[strlen(other.m_data) + 1];
 		strcpy(m_data, other.m_data);
 	}
+	m_string(m_string &&other)
+	{
+		cout << "移动构造调用" << endl;
+		m_data = other.m_data;
+		other.m_data = nullptr;
+	}
 	~m_string()
 	{
 		cout << "析构函数调用" << endl;
@@ -43,8 +49,11 @@ public:
 		}
 		return *this;
 	}
+	
 	int size()
 	{
+		if(m_data == nullptr)
+			return 0;
 		return strlen(m_data);
 	}
 
@@ -54,7 +63,11 @@ private:
 ostream & operator<<(ostream &os,const m_string & str)
 {
 	char *cur = str.m_data;
-
+	if(cur == nullptr)
+	{
+		cout<<"";
+		return os;
+	}
 	while (*cur != '\0')
 	{
 		os << *cur;
@@ -80,6 +93,12 @@ int main()
 
 	str_3 = str_1;
 	cout << "str_3 = " << str_3 << ",str_3.size() = " << str_3.size() << endl;
+
+	m_string str_4(move(str_3));
+	cout << "str_4 = " << str_4 << ",str_4.size() = " << str_4.size() << endl;
+
+	cout << "str_3 = " << str_3 << ",str_3.size() = " << str_3.size() << endl;
+
 
 	return 0;
 }
